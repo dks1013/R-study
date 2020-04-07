@@ -9,4 +9,8 @@ fruit
 fruit[1,]
 ## 사과 행 데이터만 뽑아 출력한 코드 
 
+fruit[c(1,3)]
+## product와 salecnt 한번에 출력 코드
+
+
 

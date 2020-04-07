@@ -38,3 +38,18 @@ air_df <- data.frame(read_xlsx("C:/data/air.xlsx"))
 air_df
 ## air 엑셀파일 불러와서 데이터 프레임 만들기
 
+cold <- nrow(air_df)  ##nrow 데이터 프레임의 행의 수
+condition <- c()
+for(i in 1:cold){     ##행의 수 까지만 반복
+  if(air_df$Temp[i] <= 64){
+    condition[i] <- "C"
+  }else if(air_df$Temp[i] >= 78){
+    condition[i] <- "H"
+  }else{
+    condition[i] <- "F"
+  }
+}
+air_df$condition <- condition   ## condition 데이터 프레임에 추가
+air_df
+## air_df 데이터 프레임에서 Temp가 64이하이면 C, 78이상이면 H, 
+## 나머지는 F로 분류하여 condition 벡터를 생성한 후 air_df에 추가

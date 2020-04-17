@@ -7,3 +7,26 @@ blood.type <- factor(c("A", "O", "B"))
 patients <- data.frame(name, age, gender, blood.type)
 patients
 
+#팩터형이 아닌 문자열 특성을 살린 데이터 프레임
+name <- c("김지훈", "이유진", "박동현", "김민지")
+english <- c(90, 80, 60, 70)
+math <- c(50, 60, 100, 20)
+
+df_midterm <-
+  data.frame(name, english, math, stringsAsFactors = F)
+df_midterm
+
+str(df_midterm)
+
+#데이터 프레임 데이터 추출
+name <- c("철수", "춘향", "길동")
+age <- c(22, 20, 25)
+gender <- factor(c("M", "F", "M"))
+blood.type <- factor(c("A", "O", "B"))
+
+patients <- data.frame(name, age, gender, blood.type)
+patients
+
+patients[1, ]  #1행 추출 
+patients[ ,2]  #2열 추출
+patients[3, 1]

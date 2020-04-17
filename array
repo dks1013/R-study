@@ -143,14 +143,27 @@ v3    9   10   11   12
 
 
 #lapply, sapply 함수 사용
-no.patients <-
+name <- c("철수", "춘향", "길동")
+age <- c(22, 20, 25)
+gender <- factor(c("M", "F", "M"))
+blood.type <- factor(c("A", "O", "B"))
+
+patients <- data.frame(name, age, gender, blood.type)
+patients
+
+no.patients <- 
   data.frame(day = c(1:6),
-             no = c(50, 60, 55, 52, 65, 58))
+             no = c(50, 60, 55, 65, 58))
 
-listpatients <- list(no.patients)
+listpatients <- list(patients, no.patients)
 listpatients
-listpatients <-
-  list(no.patients)
+listpatients <- 
+  list(patients=patients, no.patients=no.patients)
+listpatients
 
-lapply(listpatients[[1]], mean)
-sapply(listpatients[[1]], mean)
+lapply(listpatients[[2]], mean)
+sapply(listpatients[[2]], mean)
+
+lapply(listpatients$no.patients, mean)
+sapply(listpatients$no.patients, mean)
+

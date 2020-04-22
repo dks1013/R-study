@@ -1,0 +1,180 @@
+#논리 연산자
+
+x <- c(1, 0, 1, 0)
+y <- c(0, 0, 1, 1)
+
+(x == 0) & (y == 0)
+
+(x == 0) && (y == 0)
+
+(x == 0) | (y = 0)
+
+(x == 0) || (y = 0)
+
+x == y
+x != y
+
+x <- c(TRUE, FALSE, TRUE, FALSE)
+y <- c(FALSE, FALSE, TRUE, TRUE)
+xor(x, y)
+
+x <- TRUE
+y <- c(TRUE, TRUE)
+
+isTRUE(x)
+
+isTRUE(y)
+
+
+#조건문 
+
+x <- 5
+if(x %% 2 == 0){
+  print('x는 짝수')
+} else(
+  print('x는 홀수')
+)
+
+x <- -1
+if(x > 0){
+  print('x is a positive value')
+} else if(x < 0)(
+  print('x is a negative value')
+) else{
+  print('x is zero')
+}
+
+#ifelse문 활용
+
+x <- c(-5 : 5)
+options(digits = 3) #유효숫자를 3자리 나타내라
+sqrt(x)  #제곱근 구하는 함수
+
+sqrt(ifelse(x >= 0, x, NA)) #X>=0이 아닐때 NA값으로 나타내라 
+
+
+
+#점수가 0~100점 이외의 값이 입력된 경우 NA로 처리하는 프로그램
+
+name <- c("강서준", "김도형", "박정원", "이상훈", "최건우")
+korean <-  c(100, 90, 90, 100, 85)
+english <- c(90, 100, 95, 85, 100)
+math <- c(100, 80, 90, -100, 100)
+
+students <- data.frame(name, korean, english, math)
+ 
+students[,4] <-
+  ifelse(students[,4]>=0 & students[,4]<=100,
+         students[,4], NA)
+students
+
+
+#1부터 10까지 수 중 짝수의 합 출력하기 
+
+sum <- 0
+for(i in 1:10){
+  if(i %%2 ==0){
+    sum <- sum + i
+  }
+}
+print(sum)
+
+#또는 
+sum <- 0
+for(i in 1:10){
+  if(i %%2 != 0) next
+    sum <- sum + i
+}
+print(sum)
+
+
+#iris 데이터셋에서 꽃잎의 길이에 따라 1.6이하이면 'L', 5.1이상이면 'H', 나머지는 'M'으로 분류하여 
+레이블을 부여하기
+
+norow <- nrow(iris)
+mylabel <- c()  #비어있는 벡터 선언
+for (i in 1:norow) {
+  if(iris$Petal.Length[i] <= 1.6){
+    mylabel[i] <- "L"
+  } else if(iris$Petal.Length[i] >= 5.1){
+    mylabel[i] <- "H"
+  } else {
+    mylabel[i] <- "M"
+  }
+}
+print(mylabel)
+newds <-
+  data.frame(iris$Petal.Length, mylabel)
+head(newds)
+
+
+#1부터 100까지 수의 합 출력하기
+
+sum <- 0
+i <- 1
+while(i <= 100){
+  sum <- sum + i
+  i <- i + 1
+}
+sum
+
+
+#계승을 구하는 함수
+
+fact <- function(x){
+  fact_a = 1
+  while(x > 1){
+    fact_a = fact_a * x
+    x = x - 1
+  }
+  return(fact_a)
+}
+fact(5)
+
+
+#table함수 이용 변수의 값들의 개수를 나타냄
+my.is.na <- function(x){
+  table(is.na(x))
+}
+
+my.is.na(airquality)
+
+table(is.na(airquality)) #결과값이 같다는 것을 알 수 있다.
+
+
+#함수가 변환하는 결과값이 여러개 일때(list 사용)
+
+myfunc <- function(x, y){
+  val.sum = x + y
+  val.mul = x * y
+  return(list(sum=val.sum, mul=val.mul))
+}
+myfunc(5, 8)
+
+
+#which, which.max, which.min 사용
+
+score <- c(76, 84, 69, 50, 95, 60, 82, 71, 88, 84)
+
+which(score >= 85) #85점 이상의 숫자 위치
+
+max(score) #최댓값
+
+which.max(score) #최댓값의 위치
+
+min(score)
+
+which.min(score)
+
+idx <- which(score <= 60) #60이하의 위치값을 idx에 저장
+score[idx] <- 61 #60이하의 숫자 자리에 61로 바꾼다
+score
+
+h_idx <- which(score >= 80)
+h_idx
+score.high <- score[h_idx]
+score.high
+
+idx <- which(iris$Petal.Length > 5.0)
+iris.big <- iris[idx, ]
+iris.big

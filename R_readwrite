@@ -1,0 +1,67 @@
+#txt불러오기
+
+students <-
+  read.table("C:/data/students1.txt", header = T)
+students
+str(students)
+
+students <-
+  read.table("C:/data/students1.txt",
+             header = T, as.is = T)
+students
+str(students)  #문자를 살리면서 불러오기 가능
+
+students <-
+  read.table("C:/data/students1.txt",
+             sep=",", header = T, as.is = T)
+str(students) #구분자,
+
+students <-
+  read.table("C:/data/students1.txt",
+             sep=",", header = T, as.is = T, na.strings = "NA")
+str(students) #NA로 인식하고자 하는 문자열 정리(하지만 공백이있기때문에 NA를 인식하지 못한다.)
+
+students <-
+  read.table("C:/data/students1.txt",
+             sep=",", header = T, as.is = T, strip.white = T)
+str(students) #빈칸제거(이제 math는 int형으로 바뀌었다는 것을 확인 할 수 있을것이다.)
+
+
+# csv파일 불러오기
+
+students2 <-
+  read.csv("C:/data/students.csv")
+str(students2) #factor
+
+students2 <-
+  read.csv("C:/data/students.csv",
+           stringsAsFactors = FALSE)
+str(students2) #문자열
+
+
+# 엑셀파일 불러오기
+
+install.packages("readxl")
+library(readxl)
+students3 <-
+  read_excel("C:/data/students.xlsx")
+str(students3)
+
+
+#파일 쓰기
+
+#txt파일로 쓰기
+write.table(students,
+            file = "C:/data/stu1_output.txt") #""이것이 데이터 사이를 감싸고 있음
+
+write.table(students,
+            file = "C:/data/stu1_output.txt" 
+            quote = F)                       #그냥 빈칸으로 구분될뿐이다 (깔끔함)
+            
+#csv파일로 쓰기
+write.csv(students,
+            file = "C:/data/stu1_output.csv") #txt와 동일
+
+write.csv(students,
+            file = "C:/data/stu1_output.csv"
+            quote = F)                        #,으로 구분되어있음

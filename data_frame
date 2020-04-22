@@ -30,3 +30,61 @@ patients
 patients[1, ]  #1행 추출 
 patients[ ,2]  #2열 추출
 patients[3, 1]
+
+# $를 사용해서 데이터 추출
+patients$name
+
+#환자 중 철수에 대한 정보 추출
+patients[patients$name == "철수"]
+
+#환자 중 철수의 이름과 나이 정보만 추출
+patients[patients$name == "철수",
+         c("name", "age")]
+         
+#attach, detach 함수 사용법
+str(cars)
+speed  #cars의 속성명이다
+       #오류 발생
+attach(cars)
+speed  #결과값이 나오는것을 확인가능가
+detach(cars)
+
+#with함수, subset함수 사용
+mean(cars$speed)  #이렇게 해야되는 것을 
+
+with(cars, mean(speed))  #with함수를 사용해서 변수처럼 사용가능
+
+subset(cars, speed>20)  #일부 데이터만 추출
+
+#결측값 제거 (na.omit함수 사용)
+head(airquality)
+
+head(na.omit(airquality)) #결측값이 제거된것을 확인할 수 있다.
+
+#데이터 프레임에 파생 변수 만들기, 열삭제
+name <- c("김지훈", "이유진", "박동현", "김민지")
+english <- c(90, 80, 60, 70)
+math <- c(50, 60, 100, 20)
+
+df_midterm <- data.frame(name, english, math)
+
+#class 변수 추가
+df_midterm$class <- c(1, 2, 2, 1)
+df_midterm
+
+#class 변수 삭제
+df_midterm$class <- NULL
+df_midterm
+
+#파생변수 $사용해서 만들기
+df <- data.frame(var1 = c(4, 3, 8),
+                 var2 = c(2, 6, 1))
+df
+
+#두 변수의 함 변수 추가
+df$var_sum <- df$var1 + df$var2
+df
+
+#두 변수의 평균 변수 추가
+df$var_mean1 <- (df$var1 + df$var2)/2
+df

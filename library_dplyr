@@ -65,3 +65,15 @@ gapminder %>%  arrange(continent)
 
 #대륙을 기준으로 오름차순 정렬하여 출력하고 같은 대륙내에서는 연도의 내림차순으로 정렬
 gapminder %>%  arrange(continent, desc(year))
+
+
+install.packages("readxl")
+library(readxl)
+exam <- read_excel("C:/work/R/ch5_data/exam.xlsx")
+#파생변수 total 추가
+exam %>% mutate(total = math + english + science) %>% 
+  head()
+#파생변수 total, mean 추가가
+exam %>% mutate(total = math + english + science,
+                mean = (math + english + science)/3) %>% 
+  head()

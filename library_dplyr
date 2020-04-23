@@ -1,0 +1,34 @@
+install.packages("gapminder")
+install.packages("dplyr")
+library(gapminder)
+library(dplyr)
+
+View(gapminder)
+
+select(gapminder, country, year, lifeExp)
+
+gapminder %>% select(country, year, lifeExp)
+
+gapminder %>% select(-pop) #pop변수 제외 출력
+
+library(gapminder)
+library(dplyr)
+
+
+
+#filter
+
+filter(gapminder, country == "Croatia")   #크로아티아만 뽑기
+gapminder %>%  filter(country == "Croatia")
+
+gapminder %>% filter(continent == "Oceania") #오세아니아 대륙만 뽑기 
+gapminder %>% filter(continent != "Africa") #아프리카가 아닌 것만 뽑기 기
+gapminder %>% filter(pop >= 100000000) #인구 100000000 이상인 것만 뽑기 
+gapminder %>% filter(pop >= mean(pop)) #인구가 평균 이상인 것만 뽑기
+gapminder %>% filter(pop <= median(pop)) #인구가 중앙값 이하인 데이터만 뽑기
+
+gapminder %>% filter(pop <= 100000000 & continent == "Asia") #인구가 100000000이하인 데이터만 추출
+gapminder %>% filter(continent == "Asia" | continent == "Oceania") #continent가 아시아 또는 유럽인 데이터만 추출 
+gapminder %>% filter(continent %in% c("Asia", "Europe", "Oceania")) #continent가 아시아 또는 유럽 또는 오세아니아인 데이터만 추출 (%in% 매치 연산자 사용)
+                              #매치연산자 -> or의미를 가짐
+

@@ -65,3 +65,89 @@ rowSums(is.na(air2))
 sum(rowSums(is.na(air2))>0) #na 개수
 
 sum(is.na(air2)) #na를 가지고 있는 행 수
+
+
+#파일 가져와서 결측값 정리 하기
+examcsv <- read.csv("C:/work/R/ch5_data/examcsv.csv")
+#examcsv 파일 가져옴
+
+options(digits = 2) #2자리 숫자로 출력 
+examcsv$math <- ifelse(is.na(examcsv$math),
+                       mean(examcsv$math, na.rm = T),
+                       examcsv$math)
+examcsv
+
+
+
+#성별에서 이상값 제거
+
+name <- c("환자1", "환자2", "환자3", "환자4", "환자5")
+age <- c(22, 20, 25, 30, 27)
+gender <- factor(c("M", "F", "M", "K", "F"))
+blood_type <- factor(c("A", "O", "B", "AB", "C"))
+
+patients <-
+  data.frame(name, age, gender, blood_type)
+patients
+
+patients_outrm <-
+  patients[patients$gender == "M" | patients$gender == "F", ]
+  #gender에 M, F 값 빼고 다 제거
+patients_outrm
+
+
+#성별과 혈액형에 포함된 이상값을 결측값으로 처리 
+
+name <- c("환자1", "환자2", "환자3", "환자4", "환자5")
+age <- c(22, 20, 25, 30, 27)
+gender <- c(1, 2, 1, 3, 2) #숫자로 표현한 것
+blood_type <- c(1, 3, 2, 4, 5) #숫자로 표현한 것
+
+patients <-
+  data.frame(name, age, gender, blood_type)
+
+#성별에 있는 이상값 결측값으로 변경 
+patients$gender <-
+  ifelse((patients$gender<1 | patients$gender>2),
+         NA, patients$gender)
+
+#혈액형에 있는 이상값 결측값으로 변경
+patients$blood_type <-
+  ifelse((patients$blood_type<1 | patients$blood_type>4),
+         NA, patients$blood_type)
+
+#결측값 모두 제거
+patients[!is.na(patients$gender) &
+           !is.na(patients$blood_type), ]
+
+
+#수치 상의 이상치 값은 summary를 이용할 수 도 있음 
+summary(airquality[, c(1:4)])
+
+boxplot(airquality[,1])$stats  #stats는 결과와 표를 2개다 출력 하는 것 (표)
+
+> boxplot(airquality[,1])$stats #결과
+     [,1]
+[1,]    1  #하단 극단치 경계
+[2,]   18  #1사분위수
+[3,]   32  #중앙값
+[4,]   64  #3사분위수
+[5,]  122  #상단 극단치 경계
+attr(,"class")
+
+
+        1 
+"integer"
+
+#임시 저장 변수 air에 airquality데이터 복사하여 Ozone의 결측값 개수 확인 
+air <- airquality
+table(is.na(air$Ozone))
+
+#이상값을 결측값(NA)로 변경하고 결측값 개수 확인하기 
+air$Ozone <-
+  ifelse(air$Ozone < 1 | air$Ozone > 122, NA, air$Ozone)
+table(is.na(air$Ozone))
+
+#결측값(NA)로 제거하고 Ozone의 평균 확인하기
+air_narm3 <- air[!is.na(air$Ozone), ]
+mean(air_narm3$Ozone)

@@ -1,0 +1,67 @@
+> str(airquality)
+'data.frame':   153 obs. of  6 variables:
+ $ Ozone  : int  41 36 12 18 NA 28 23 19 8 NA ...
+ $ Solar.R: int  190 118 149 313 NA NA 299 99 19 194 ...
+ $ Wind   : num  7.4 8 12.6 11.5 14.3 14.9 8.6 13.8 20.1 8.6 ...
+ $ Temp   : int  67 72 74 62 56 66 65 59 61 69 ...
+ $ Month  : int  5 5 5 5 5 5 5 5 5 5 ...
+ $ Day    : int  1 2 3 4 5 6 7 8 9 10 ...
+> table(is.na(airquality))
+
+FALSE  TRUE 
+  874    44  #F는 일반값, T는 결측값
+  
+  #ozone 속성에서 na가 없는 값만 추출함
+air_narm <- airquality[!is.na(airquality$Ozone), ] #!는 ~가 아닌것 
+head(air_narm) #onzone 열에 NA값만 제거
+
+mean(air_narm$Ozone) #Ozone 데이터 평균
+
+#na.omit 함수
+air_narm1 <- na.omit(airquality) #NA값 전부 제거
+mean(air_narm1$Ozone)
+
+#na.rm 함수
+mean(airquality$Ozone, na.rm = T) #Ozone의 열에서 na를 제거
+
+
+
+#na값 확인하고 제거 하기
+
+table(is.na(airquality))
+
+table(is.na(airquality$Ozone))
+
+table(is.na(airquality$Solar.R))
+
+air_narm2 <-
+  airquality[!is.na(airquality$Ozone) & !is.na(airquality$Solar.R), ]
+mean(air_narm2$Ozone) #Ozone과 Solar.R의 NA값을 다 제거
+
+
+#데이터프레임의 열별 결측값 확인 (for 반복문 사용)
+
+head(airquality)
+air2 <- airquality
+
+for (i in 1:ncol(air2)) {  #ncol 컬럼의 갯수
+  this.na <- is.na(air2[, i])
+  cat(colnames(air2)[i], "\t", sum(this.na), "\n")
+} #cat함수 열이름과 NA의 개수 출력 
+
+#데이터프레임의 열별 결측값 확인 (apply 사용)
+
+col_na <- function(y){
+  return(sum(is.na(y)))
+}
+
+na_count <- apply(air2, 2, FUN = col_na)
+na_count #air데이터 프레임, 열데이터, 함수 
+
+
+#행별 결측값 확인
+rowSums(is.na(air2))
+
+sum(rowSums(is.na(air2))>0) #na 개수
+
+sum(is.na(air2)) #na를 가지고 있는 행 수

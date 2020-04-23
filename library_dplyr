@@ -29,6 +29,26 @@ gapminder %>% filter(pop <= median(pop)) #인구가 중앙값 이하인 데이�
 
 gapminder %>% filter(pop <= 100000000 & continent == "Asia") #인구가 100000000이하인 데이터만 추출
 gapminder %>% filter(continent == "Asia" | continent == "Oceania") #continent가 아시아 또는 유럽인 데이터만 추출 
-gapminder %>% filter(continent %in% c("Asia", "Europe", "Oceania")) #continent가 아시아 또는 유럽 또는 오세아니아인 데이터만 추출 (%in% 매치 연산자 사용)
-                              #매치연산자 -> or의미를 가짐
+gapminder %>% filter(continent %in% c("Asia", "Europe", "Oceania")) #continent가 아시아 또는 유럽 또는 오세아니아인 데이터만 추출
+                              # %in% 매치 연산자 사용 -> or의미를 가짐
 
+
+#데이터 가공
+library(gapminder)
+library(dplyr)
+
+#인구의 평균을 요약
+summarise(gapminder, pop_avg = mean(pop))
+gapminder %>% summarise(pop_avg = mean(pop))
+
+#대륙별로 인구의 평균을 요약
+summarise(group_by(gapminder, continent),
+          pop_avg = mean(pop))
+gapminder %>% group_by(continent) %>% 
+  summarise(pop_avg = mean(pop))
+
+#대륙별로 그룹짓고 같은 대륙은 나라별로 그룹 지은 후 인구의 평균을 출력
+summarise(group_by(gapminder, continent, country),
+          pop_avg = mean(pop))
+gapminder %>% group_by(continent, country) %>% 
+  summarise(pop_avg = mean(pop))

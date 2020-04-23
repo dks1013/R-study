@@ -160,3 +160,36 @@ table(is.na(o_mpg$hwy))                     #결측값 유무 확인
 hwy <- ifelse(hwy < 12 | hwy > 37, NA, hwy) #상,하단 경계치 값 12와 37을 사용하여 경계치를 
                                             #벗어난 값은 NA로 처리
 table(is.na(hwy))
+
+
+
+#데이터 가공
+
+install.packages("gapminder")
+install.packages("dplyr")
+library(gapminder)
+library(dplyr)
+
+glimpse(gapminder) #str과 비슷한 역활(데이터의 구조를 알기 위한 함수)
+str(gapminder)
+
+#샘플과 속성의 추출
+#각 나라의 기대수명 확인
+gapminder[, c("country", "lifeExp")]
+
+#동일 국가의 기대 수명이 여러개 출력되므로 측정 연도를 같이 출력
+gapminder[, c("country", "lifeExp", "year")]
+
+#유명 관광지인 크로아티아에 대한 자료 출력
+gapminder[gapminder$country == "Croatia", ]
+
+#크로아티아의 인구 속성만 출력
+gapminder[gapminder$country == "Croatia", "pop"]
+
+#1990년대 이후의 크로아티아의 기대 수명과 인구 속성 출력
+gapminder[gapminder$country == "Croatia" & gapminder$year > 1990,
+          c("lifeExp", "pop")]
+
+#크로아티아의 기대 수명과 인구속성의 평균 출력(apply함수)
+apply(gapminder[gapminder$country == "Croatia", c("lifeExp", "pop")],
+      2, mean)

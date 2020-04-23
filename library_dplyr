@@ -52,3 +52,16 @@ summarise(group_by(gapminder, continent, country),
           pop_avg = mean(pop))
 gapminder %>% group_by(continent, country) %>% 
   summarise(pop_avg = mean(pop))
+
+
+#크로아티아의 country, year, lifeExp열들만 추출한 후 기대수명의 평균 출력
+gapminder %>% 
+  filter(country == "Croatia") %>% 
+  select(country, year, lifeExp) %>% 
+  summarise(lifeExp_avg = mean(lifeExp))
+
+#대륙을 기준으로 오름차순 정렬하여 출력
+gapminder %>%  arrange(continent)
+
+#대륙을 기준으로 오름차순 정렬하여 출력하고 같은 대륙내에서는 연도의 내림차순으로 정렬
+gapminder %>%  arrange(continent, desc(year))

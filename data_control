@@ -149,3 +149,14 @@ table(is.na(air$Ozone))
 #결측값(NA)로 제거하고 Ozone의 평균 확인하기
 air_narm3 <- air[!is.na(air$Ozone), ]
 mean(air_narm3$Ozone)
+
+
+#데이터 정제
+o_mpg <- read.csv("C:/work/R/ch5_data/ou_mpg.csv",
+                  stringsAsFactors = F)
+attach(o_mpg)
+
+table(is.na(o_mpg$hwy))                     #결측값 유무 확인
+hwy <- ifelse(hwy < 12 | hwy > 37, NA, hwy) #상,하단 경계치 값 12와 37을 사용하여 경계치를 
+                                            #벗어난 값은 NA로 처리
+table(is.na(hwy))

@@ -130,3 +130,164 @@ ex_mpg %>%
   filter(manufacturer %in% c("chevrolet", "ford", "honda")) %>% 
   summarise(hwy_mean = mean(hwy)) %>% 
   print()
+
+
+#아우디에서 생산한 자동차 중 hwy가 1~5위에 해당하는 
+#자동차 데이터를 출력 
+
+library(ggplot2)
+library(dplyr)
+
+ex_mpg %>% 
+  filter(manufacturer=="audi") %>% 
+  arrange(desc(hwy)) %>% 
+  head(5)
+
+#도시연비(cty), 고속도로 연비(hwy)를 더한 합산 변수를 
+#추가하고 도시연비(cty), 고속도로 연비(hwy)를 나눈 
+#평균 연비 변수를 추가한 후 평균 연비 변수가 가장 높은 
+#3종의 데이터를 출력하세요.
+
+ex_mpg %>% 
+  mutate(tot_miles = cty + hwy,
+         avg_miles = tot_miles/2) %>% 
+  arrange(desc(avg_miles)) %>% 
+  head(3)
+
+#회사별로 그룹을 나눈후 동일 회사내에서는 다시 구동방식
+#별로 그룹지어 구동 방식별 도시 연비 평균을 출력
+
+ex_mpg %>% 
+  group_by(manufacturer, drv) %>% 
+  summarise(mean_city = mean(cty)) %>% 
+  head(10)
+# drv(구동 방식)
+# -4 : 4륜 구동
+# -f : 전륜 구동 
+# -r : 후륜 구동
+
+
+#회사별로 자동차종류가 "suv"인 자동차의 도시 및 고속도로
+#통합 연비 평균을 구해 내림차순으로 정렬하고, 1~5위 까지 출력
+
+ex_mpg %>% 
+  filter(class == "suv") %>% 
+  group_by(manufacturer) %>% 
+  mutate(total = (cty + hwy)/2) %>% 
+  summarise(tot_mean = mean(total)) %>% 
+  arrange(desc(tot_mean)) %>% 
+  head()
+
+#각 회사별 겨아 종 수를 내림차순으로 정렬 
+
+ex_mpg %>% 
+  filter(class == "compact") %>% 
+  group_by(manufacturer) %>% 
+  summarise(cnt = n()) %>% 
+  arrange(desc(cnt))
+
+
+#새 데이터 들고 오기
+n_mpg <-
+  read.csv("C:/work/R/ch5_data/n_mpg.csv", stringsAsFactors = F)
+table(is.na(n_mpg$drv)) #drv 결측치 확인 
+table(is.na(n_mpg$hwy)) #hwy 결측치 확인 
+
+#filter를 이용해서 hwy변수의 결측치를 제외하고, 어떤 구동방식의 
+#hwy 평균이 높은지 알아보기
+
+n_mpg %>% 
+  filter(!is.na(hwy)) %>% 
+  group_by(drv) %>% 
+  summarise(mean_hwy = mean(hwy))
+
+#데이터 가져오기
+ou_mpg <- 
+  read.csv("C:/work/R/ch5_data/ou_mpg.csv", stringsAsFactors = F)
+
+#구동방식(drv)에 이상치가 있는지 확인하기 
+table(ou_mpg$drv)  #구동방식 어떤게 있는지 확인 하기 
+ou_mpg$drv <-
+  ifelse(ou_mpg$drv %in% c("4", "f", "r"),  
+         ou_mpg$drv, NA) #이상치를 NA로 바꿈
+table(ou_mpg$drv) 
+
+#2번째 이상치값 처리
+#그래프로 이상치값 확인
+boxplot(ou_mpg$cty)$stats #stats를 이용해서 상단, 하단 값을 출력
+
+ou_mpg$cty <-
+  ifelse(ou_mpg$cty < 9 | ou_mpg$cty > 26,
+         NA, ou_mpg$cty) #상단에서 하단 사이가 아닌값 NA로 만듬듬
+boxplot(ou_mpg$cty)
+
+#3번째 이상치값 처리
+#하나의 dplyr 구문으로 만들기
+ou_mpg %>% 
+  filter(!is.na(drv) & !is.na(cty)) %>% 
+  group_by(drv) %>% 
+  summarise(mean_cty = mean(cty))
+
+
+#아보카도 데이터
+avocado <- read.csv("C:/work/R/avocado/avocado.csv")
+str(avocado)
+
+#그룹 단위 통계
+#총판매량과 평균 가격 속성을 지역에 따라 구분하여 요약
+
+(x_avg <- avocado %>% 
+  group_by(region) %>% 
+  summarise(V_avg = mean(Total.Volume),   #전체를 ()감싸면 변수생성,
+            P_avg = mean(AveragePrice)))  #결과도 볼 수 있음
+
+#총 판매량과 평균 가격 속성을 지역, 연도 별로 세분화 하기 
+(x_avg <- avocado %>% 
+  group_by(region, year) %>% 
+  summarise(V_avg = mean(Total.Volume),
+            P_avg = mean(AveragePrice)))
+
+#총 판매량과 평균가격 속성을 지역, 연도, 유기농 여부 별로 세분화 하기 
+(x_avg <- avocado %>% 
+    group_by(region, year, type) %>% 
+    summarise(V_avg = mean(Total.Volume),
+              P_avg = mean(AveragePrice)))
+
+#총 판매량을 기준으로 판매량 순위와 최댓값을 기록한 연도와 지역 출력
+arrange(x_avg, desc(V_avg))
+
+#총판매량을 기준으로 판매량 순위와 최댓값을 기록한 연도와 지역 출력
+x_avg1 <- x_avg %>%  filter(region != "TotalUS")
+x_avg1 %>%  arrange(desc(V_avg)) %>% 
+  head(1)
+
+#열별 평균 요약
+install.packages("lubridate")
+library(lubridate)
+(x_avg2 <- avocado %>% 
+    group_by(region, year, month(Date), type) %>% 
+    summarise(V_avg = mean(Total.Volume),
+              P_avg = mean(AveragePrice)))
+
+
+#wine데이터 가공
+wine <- read.table("C:/work/R/ch5_data/wine.data.txt",
+                   header = FALSE, sep = ",") #헤더가 없다는 것을 알림 
+head(wine)
+
+#데이터 프레임의 열 이름 읽고 쓰기
+n <- readLines("C:/work/R/ch5_data/wine.name.txt")
+names(wine)[2:14] <- substr(n, 4, nchar(n)) #txt 내부에 문자 데이터만 가져옴 
+names(wine)
+
+names(wine)[1] <- "id"
+names(wine)
+
+#데이터 셋 분할하기 
+#wine데이터의 60%만 추출하여 train_set 데이터에 지정
+train_set <- sample_frac(wine, 0.6)
+str(train_set)
+
+#wine 데이터에서 train_set 데이터를 제외한 데이터를 test_set데이터에 지정 
+test_set <- setdiff(wine, train_set)
+str(test_set)

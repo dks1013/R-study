@@ -291,3 +291,53 @@ str(train_set)
 #wine 데이터에서 train_set 데이터를 제외한 데이터를 test_set데이터에 지정 
 test_set <- setdiff(wine, train_set)
 str(test_set)
+
+# 1인당 전기 생산 데이터 가져오기
+elec_gen <-
+  read.csv("C:/work/R/electricity_generation_per_person.csv",
+           header = TRUE)
+names(elec_gen) #열이름 확인
+ncol(elec_gen) #열 갯수 확인
+
+names(elec_gen)[2:33] <-
+  substr(names(elec_gen)[2:33], 2, nchar(names(elec_gen)[2:33]))
+names(elec_gen) #연도 속성에 x문자 제거한 후 열이름 지정
+
+#1인당 전기 소비량 데이터
+elec_use <-
+  read.csv("C:/work/R/electricity_use_per_person.csv",
+           header = TRUE)
+names(elec_use)
+ncol(elec_use) #열 갯수 확인
+
+names(elec_use)[2:56] <-
+  substr(names(elec_use)[2:56], 2, nchar(names(elec_use)[2:56]))
+names(elec_use) #x문자 제거
+
+#가로형 -> 세로형
+install.packages("tidyr")
+library(tidyr)
+
+w_iris <- iris
+head(w_iris)
+
+l_iris <- gather(w_iris, Type, value, Sepal.Length:Petal.Width)
+head(l_iris)
+
+#데이터 구조 변경
+#elec_gen 세로형 데이터로 변형하기
+elec_gen_df <-
+  gather(elec_gen, -country, key = "year", value = "ElectricityGeneration")
+
+elec_gen_df <-
+  gather(elec_gen, year, ElectricityGeneration, -country) #같은 방법 
+
+#elec_use 세로형 데이터로 변형하기
+#elec_use 데이터에서 결측값 제거 
+elec_use1 <- na.omit(elec_use)
+
+elec_use_df <-
+  gather(elec_use, -country, key = "year", value = "ElectricityUse")
+
+elec_use_df <-
+  gather(elec_use1, year, ElectricityUse, -country)

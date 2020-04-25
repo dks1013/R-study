@@ -95,6 +95,6 @@ nlevels(y$continent)
 legend("topleft", legend = levels(y$continent),
        pch = c(1:5), col = c(1:5))
 
-legend("topleft", legend = levels(y$continent), #topleft 범주 위치
+legend("topleft", legend = levels(y$continent), #topleft 범례 위치
        pch = c(1:length(levels(y$continent))),
        col = c(1:length(levels(y$continent))))

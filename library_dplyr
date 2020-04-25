@@ -341,3 +341,44 @@ elec_use_df <-
 
 elec_use_df <-
   gather(elec_use1, year, ElectricityUse, -country)
+
+#데이터 병합
+df_x <- data.frame(name = c("a", "b", "c"),
+                   math = c(88, 80, 75))
+df_y <- data.frame(name = c("a", "b", "d"),
+                   korean = c(70, 88, 75))
+df_x
+df_y
+
+z <- merge(df_x, df_y, by = c("name"))
+z
+
+merge(df_x, df_y, all.x = T)  # x기준으로 만드는 것
+
+merge(df_x, df_y, all.y = T) # y기준으로 만드는 것 
+
+merge(df_x, df_y, all = T) # 데이터 전체를 포함해서 만드는 것
+
+#데이터 병합하기 
+elec_gen_use <- merge(elec_gen_df, elec_use_df) # 데이터 전체를 표시
+View(elec_gen_use)
+
+#건강 검진 데이터 불러오기
+NHIS2017 <-
+  read.csv("C:/work/R/NHIS_OPEN_GJ_2017.csv",
+           fileEncoding = "EUC-KR")
+str(NHIS2017)
+
+#데이터 가공 (결측값을 제거)
+NHIS2017_2 <- NHIS2017[1:26] #기준년도 ~ 흡연상태열 까지만 저장
+NHIS2017_2 <- na.omit(NHIS2017_2) #결측값을 제거
+View(NHIS2017_2)
+
+#기준년도, 성별코드, 연령대코드.5세단위, 시도코드 별로 그룸 지은 후,
+#키, 체중, 허리둘레의 평균값만을 표시하는 NHIS2017M데이터 생성하기 
+library(dplyr)
+NHIS2017M <- NHIS2017_2 %>%
+  group_by(기준년도, 성별코드, 시도코드, 연령대코드.5세단위.) %>% 
+  summarise(신장평균=mean(신장.5Cm단위.), 체중평균=mean(체중.5Kg단위.),
+                허리둘레평균=mean(허리둘레))
+  

@@ -115,7 +115,7 @@ printcp(r)
 
 par(mfrow = c(1,1), xpd = NA) #xpd=NA 그림이 클 경우 그래픽 장치 내부에 그림 출력 
 plot(r)
-text(r, use.n = TE)
+text(r, use.n = TRUE)
 
 #predict함수를 사용하여 예측 
 p <- predict(r, iris, type = 'class')

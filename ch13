@@ -1,0 +1,174 @@
+#결정 트리 예측
+
+newd <- data.frame(Sepal.Length = c(5.11, 7.01, 6.32),
+                   Sepal.Width = c(3.51, 3.2, 3.31),
+                   Petal.Length = c(1.4, 4.71, 6.02),
+                   Petal.Width = c(0.9, 1.4, 2.49))
+
+print(newd)
+predict(r, newdata = newd)
+
+#결정트리 해석 
+summary(r)
+
+#결정트리 시각화
+install.packages("rpart.plot")
+library(rpart.plot)
+rpart.plot(r)
+rpart.plot(r, type = 4)
+
+install.packages("randomFores")
+library(randomForest)
+f <- randomForest(Species ~ ., data = iris)
+print(f)
+
+plot(f)
+legend("topright", legend = c("setosa", "versicolor", "virginica", "Error"),
+       col = c("red", "blue", "green", "black"), pch = c(20,20,20,20))
+
+varUsed(f)
+
+#랜덤 포레스트로 예측하기 
+newd <- data.frame(Sepal.Length = c(5.11, 7.01, 6.32),
+                   Sepal.Width = c(3.51, 3.2, 3.31),
+                   Petal.Length = c(1.4, 4.71, 6.02),
+                   Petal.Width = c(0.9, 1.4, 2.49))
+
+print(newd)
+predict(f, newdata = newd, type = 'prob')
+
+small_forest <- randomForest(Species ~ ., data = iris,
+                             ntree=20, nodesize=6, maxnodes=12)
+treesize(small_forest)
+small_forest
+
+library(rpart)
+library(randomForest)
+
+#결정트리와 랜덤포레스트 함수를 적용한 합격예측 모델 만들기 
+ucla <- read.csv('http://stats.idre.ucla.edu/stat/data/binary.csv')
+str(ucla)
+ucla$admit <- factor(ucla$admit)
+
+#결정트리와 랜덤포레스트 함수를 적용한 합격예측 모델 만들기 
+r <- rpart(admit ~., data = ucla)
+par(mfrow = c(1, 1), xpd = NA)
+plot(r)
+text(r, use.n = TRUE)
+p <- predict(r, ucla, type = 'class')
+table(p, ucla$admit)  #정확률 (249+54)/400 = 80.5%
+
+f <- randomForest(admit ~., data = ucla)
+print(f)
+
+library(survival)
+clean_colon <- na.omit(colon)
+clean_colon <- clean_colon[c(TRUE, FALSE),]
+clean_colon$status <- factor(clean_colon$status)
+str(clean_colon)
+
+r1 <- rpart(status ~ rx + sex + age + obstruct + perfor + adhere  +
+              nodes + differ + extent + surg + node4, data = clean_colon)
+p1 <- predict(r1, clean_colon, type = 'class')
+table(p1, clean_colon$status) #(319+283)/888=67.793%
+
+plot(r1)
+text(r1, use.n = TRUE)
+
+summary(r1)
+
+#목소리로 성별 구분하는 모델만들기
+voice <- read.csv("D:/work/R/voice.csv")
+str(voice)
+table(is.na(voice))
+
+r2 <- rpart(label ~., data = voice)
+plot(r2)
+text(r2, use.n = TRUE)
+
+p2 <- predict(r2, voice, type = 'class')
+table(p2, voice$label)  #(1551+1496)/3168=96.18%
+
+f2 <- randomForest(label ~., data = voice)
+f2
+treesize(f2)
+
+#모델의 성능 평가
+install.packages("caret")
+install.packages("e1071")
+library(rpart)
+library(randomForest)
+library(caret)
+#결정 트리 모델
+r <- rpart(Species ~., data = iris)
+f <- randomForest(Species ~., data = iris, ntree = 3)
+r_pred <- predict(r, iris, type = 'class')
+confusionMatrix(r_pred, iris$Species) #(50+49+45)/150=96%
+
+f_pred <- predict(f, iris)
+confusionMatrix(f_pred, iris$Species)
+
+#iris 데이터를 6:4비율로 나누는 코드
+#sample함수 사용 : 랜덤으로 뽑기, setdiff함수 사용
+
+n <- nrow(iris) 
+i <- 1:n
+train_list <- sample(i, n*0.6)
+test_list <- setdiff(i, train_list)
+iris_train <- iris[train_list, ]
+iris_test <- iris[test_list, ]
+str(iris_train)
+str(iris_test)
+
+f <- randomForest(Species ~., data = iris_train)
+p <- predict(f, newdata = iris_test)
+p
+
+#iris_train모델 정확률 
+table(p, iris_test$Species)
+confusionMatrix(p, iris_test$Species)
+
+#CreatDataPartition함수 사용
+library(caret)
+train_list <-
+  createDataPartition(y = iris$Species, p = 0.6, list = FALSE)
+iris_train <- iris[train_list, ]
+iris_test <- iris[-train_list, ]
+f1 <- randomForest(Species ~., data = iris_train)
+p1 <- predict(f1, newdata = iris_test)
+table(p1, iris_test$Species)
+
+#교차 검증
+#반복문으로 구현하기
+data <- iris[sample(nrow(iris)), ]
+k <- 5
+q <- nrow(data)/k
+l <- 1:nrow(data)
+accuracy <- 0
+for (i in 1:k) {
+  test_list <- ((i-1)*q+1):(i+q)
+  testData <- data[test_list, ]
+  train_list <- setdiff(l, test_list)
+  trainData <- data[train_list, ]
+  f2 <- train(Species ~ ., data = trainData, method = 'rf')
+  p2 <- predict(f2, newdata = testData)
+  t <- table(p2, testData$Species)
+  accuracy <- accuracy+(t[1,1]+t[2,2]+t[3,3])/length(test_list)
+}
+
+#평균 정확률
+(average_accuracy=accuracy/k)
+
+#caret라이브러리로 구현하기
+control <- trainControl(method = 'cv', number = 5)
+f3 <- train(Species ~., data = iris, method = 'rf',
+            metric='Accuracy', trControl = control)
+confusionMatrix(f3)
+
+#정밀도와 재현률 또는 특이도와 민감도
+#암 판정
+lbl <- c(1, 1, 0, 1, 0, 0, 1, 1, 1, 0)
+lbl <- factor(lbl)
+fpred <- c(1, 0, 0, 1, 1, 0, 1, 1, 0, 0)
+fpred <- factor(fpred)
+confusionMatrix(fpred, lbl)
